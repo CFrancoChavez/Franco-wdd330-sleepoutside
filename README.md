@@ -5,6 +5,8 @@
 
  - This repository is the start of the SleepOutside web application project for WDD 330. The repository contains branches which are checkpoints for the team and individual assignments throughout the course.
 
+ - Deployed Site: https://68cbf736e2e6d32674526ec7--bucolic-sfogliatella-0c764f.netlify.app/
+
  - https://byui-cse.github.io/wdd330-ww-course/week01/team.html
 
 ### Prerequisites
