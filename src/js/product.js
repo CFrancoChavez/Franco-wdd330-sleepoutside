@@ -1,10 +1,20 @@
-import { setLocalStorage } from './utils.mjs';
+import { getLocalStorage, setLocalStorage } from './utils.mjs';
 import ProductData from './ProductData.mjs';
 
 const dataSource = new ProductData('tents');
 
+// function addProductToCart(product) {
+//   setLocalStorage('so-cart', product);
+// }
 function addProductToCart(product) {
-  setLocalStorage('so-cart', product);
+  // 1. Obtiene la lista actual del localStorage
+  const cartItems = getLocalStorage('so-cart') || [];
+  
+  // 2. Agrega el nuevo producto a la lista
+  cartItems.push(product);
+  
+  // 3. Guarda la lista completa y actualizada en localStorage
+  setLocalStorage('so-cart', cartItems);
 }
 // add to cart button event handler
 async function addToCartHandler(e) {
