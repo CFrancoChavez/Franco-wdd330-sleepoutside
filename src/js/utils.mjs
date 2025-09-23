@@ -27,3 +27,20 @@ export function getParam(param) {
   const urlParams = new URLSearchParams(queryString);
   return urlParams.get(param);
 }
+
+
+// Renders a list of items to the DOM using a template function
+export function renderListWithTemplate(
+  templateFn,
+  parentElement,
+  list,
+  position = 'afterbegin',
+  clear = false
+) {
+  if (clear) {
+    parentElement.innerHTML = '';
+  }
+
+  const htmlStrings = list.map((item) => templateFn(item));
+  parentElement.insertAdjacentHTML(position, htmlStrings.join(''));
+}
