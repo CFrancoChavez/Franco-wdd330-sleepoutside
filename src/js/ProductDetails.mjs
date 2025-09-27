@@ -1,27 +1,8 @@
-// import { setLocalStorage } from './utils.mjs';
 
-// function renderProductDetails(product) {
-//   const html = `
-//     <h3 class="product-brand">${product.Brand.Name}</h3>
-//     <h2 class="product-name">${product.NameWithoutBrand}</h2>
-//     <img
-//       class="product-image"
-//       src="${product.Image}"
-//       alt="Image of ${product.NameWithoutBrand}"
-//     />
-//     <p class="product-card__price">$${product.FinalPrice}</p>
-//     <p class="product-color">${product.Colors[0].ColorName}</p>
-//     <p class="product-description">
-//       ${product.DescriptionHtmlSimple}
-//     </p>
-//     <div class="product-action">
-//       <button class="addToCart" data-id="${product.Id}">Add to Cart</button>
-//     </div>
-//   `;
-//   document.querySelector('.product-detail').innerHTML = html;
-// }
+// import { getLocalStorage, setLocalStorage } from './utils.mjs';
 
 // export default class ProductDetails {
+
 //   constructor(productId, dataSource) {
 //     this.productId = productId;
 //     this.product = {};
@@ -29,22 +10,97 @@
 //   }
 
 //   async init() {
+//     // use the datasource to get the details for the current product. findProductById will return a promise! use await or .then() to process it
 //     this.product = await this.dataSource.findProductById(this.productId);
-//     renderProductDetails(this.product);  
-  
+//     // the product details are needed before rendering the HTML
+//     this.renderProductDetails();
+//     // once the HTML is rendered, add a listener to the Add to Cart button
+//     // Notice the .bind(this). This callback will not work if the bind(this) is missing. Review the readings from this week on "this" to understand why.
 //     document
 //       .getElementById('addToCart')
-//       .addEventListener('click', this.addToCart.bind(this));
+//       .addEventListener('click', this.addProductToCart.bind(this));
 //   }
 
-//   addToCart() {
-//     setLocalStorage('so-cart', this.product);
+//   addProductToCart() {
+//     const cartItems = getLocalStorage('so-cart') || [];
+//     cartItems.push(this.product);
+//     setLocalStorage('so-cart', cartItems);
+//   }
+
+//   renderProductDetails() {
+//     productDetailsTemplate(this.product);
 //   }
 // }
+
+// function productDetailsTemplate(product) {
+//   document.querySelector('h2').textContent = product.Brand.Name;
+//   document.querySelector('h3').textContent = product.NameWithoutBrand;
+
+//   const productImage = document.getElementById('productImage');
+//   productImage.src = product.Image;
+//   productImage.alt = product.NameWithoutBrand;
+
+//   document.getElementById('productPrice').textContent = product.FinalPrice;
+//   document.getElementById('productColor').textContent = product.Colors[0].ColorName;
+//   document.getElementById('productDesc').innerHTML = product.DescriptionHtmlSimple;
+
+//   document.getElementById('addToCart').dataset.id = product.Id;
+// }
+
+// // ************* Alternative Display Product Details Method *******************
+// // function productDetailsTemplate(product) {
+// //   return `<section class="product-detail"> <h3>${product.Brand.Name}</h3>
+// //     <h2 class="divider">${product.NameWithoutBrand}</h2>
+// //     <img
+// //       class="divider"
+// //       src="${product.Image}"
+// //       alt="${product.NameWithoutBrand}"
+// //     />
+// //     <p class="product-card__price">$${product.FinalPrice}</p>
+// //     <p class="product__color">${product.Colors[0].ColorName}</p>
+// //     <p class="product__description">
+// //     ${product.DescriptionHtmlSimple}
+// //     </p>
+// //     <div class="product-detail__add">
+// //       <button id="addToCart" data-id="${product.Id}">Add to Cart</button>
+// //     </div></section>`;
+// // }
+
+// src/js/ProductDetails.mjs
+
 import { getLocalStorage, setLocalStorage } from './utils.mjs';
 
-export default class ProductDetails {
+function productDetailsTemplate(product) {
+  // Manejo de la imagen: usa el path correcto del objeto product.
+  // Se asume que la ruta de la imagen está en product.Image.
+  const imagePath = typeof product.Image === 'string' 
+      ? product.Image 
+      : (product.Image?.External || `/images/placeholder.jpg`); 
 
+  // RETORNA la cadena HTML completa para ser inyectada
+  return `
+    <section class="product-detail">
+      <h3 class="card__brand">${product.Brand.Name}</h3>
+      <h2 class="divider">${product.NameWithoutBrand}</h2>
+      <img
+        class="divider"
+        src="${imagePath}" 
+        alt="${product.NameWithoutBrand}"
+        id="productImage"
+      />
+      <p class="product-card__price">$${product.FinalPrice}</p>
+      <p class="product__color">${product.Colors[0].ColorName}</p>
+      <p class="product__description">
+        ${product.DescriptionHtmlSimple}
+      </p>
+      <div class="product-detail__add">
+        <button id="addToCart" data-id="${product.Id}">Add to Cart</button>
+      </div>
+    </section>
+  `;
+}
+
+export default class ProductDetails {
   constructor(productId, dataSource) {
     this.productId = productId;
     this.product = {};
@@ -52,12 +108,16 @@ export default class ProductDetails {
   }
 
   async init() {
-    // use the datasource to get the details for the current product. findProductById will return a promise! use await or .then() to process it
     this.product = await this.dataSource.findProductById(this.productId);
-    // the product details are needed before rendering the HTML
+    
+    if (!this.product) {
+        console.error('Producto no encontrado:', this.productId);
+        // Puedes añadir una redirección o un mensaje de error aquí
+        return; 
+    }
+
     this.renderProductDetails();
-    // once the HTML is rendered, add a listener to the Add to Cart button
-    // Notice the .bind(this). This callback will not work if the bind(this) is missing. Review the readings from this week on "this" to understand why.
+    
     document
       .getElementById('addToCart')
       .addEventListener('click', this.addProductToCart.bind(this));
@@ -69,41 +129,11 @@ export default class ProductDetails {
     setLocalStorage('so-cart', cartItems);
   }
 
+  // MÉTODO CORREGIDO: Inyecta el HTML de la plantilla en el contenedor <main>
   renderProductDetails() {
-    productDetailsTemplate(this.product);
+    const mainElement = document.querySelector('main');
+    
+    // Inyecta el HTML generado por la plantilla.
+    mainElement.innerHTML = productDetailsTemplate(this.product);
   }
 }
-
-function productDetailsTemplate(product) {
-  document.querySelector('h2').textContent = product.Brand.Name;
-  document.querySelector('h3').textContent = product.NameWithoutBrand;
-
-  const productImage = document.getElementById('productImage');
-  productImage.src = product.Image;
-  productImage.alt = product.NameWithoutBrand;
-
-  document.getElementById('productPrice').textContent = product.FinalPrice;
-  document.getElementById('productColor').textContent = product.Colors[0].ColorName;
-  document.getElementById('productDesc').innerHTML = product.DescriptionHtmlSimple;
-
-  document.getElementById('addToCart').dataset.id = product.Id;
-}
-
-// ************* Alternative Display Product Details Method *******************
-// function productDetailsTemplate(product) {
-//   return `<section class="product-detail"> <h3>${product.Brand.Name}</h3>
-//     <h2 class="divider">${product.NameWithoutBrand}</h2>
-//     <img
-//       class="divider"
-//       src="${product.Image}"
-//       alt="${product.NameWithoutBrand}"
-//     />
-//     <p class="product-card__price">$${product.FinalPrice}</p>
-//     <p class="product__color">${product.Colors[0].ColorName}</p>
-//     <p class="product__description">
-//     ${product.DescriptionHtmlSimple}
-//     </p>
-//     <div class="product-detail__add">
-//       <button id="addToCart" data-id="${product.Id}">Add to Cart</button>
-//     </div></section>`;
-// }
