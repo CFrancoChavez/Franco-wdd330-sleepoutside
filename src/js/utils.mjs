@@ -37,10 +37,15 @@ export function renderListWithTemplate(
   position = 'afterbegin',
   clear = false
 ) {
+  // 1. Limpiar el contenido si se solicita
   if (clear) {
     parentElement.innerHTML = '';
   }
 
+  // 2. Transformar la lista de datos a un array de strings HTML
+  // Aquí usamos la sintaxis completa para mayor claridad, aunque list.map(templateFn) también funciona
   const htmlStrings = list.map((item) => templateFn(item));
+  
+  // 3. Insertar el HTML
   parentElement.insertAdjacentHTML(position, htmlStrings.join(''));
 }
