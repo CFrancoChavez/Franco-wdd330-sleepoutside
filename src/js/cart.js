@@ -1,56 +1,13 @@
-// import { getLocalStorage } from './utils.mjs';
+// src/js/cart.js
 
-// function renderCartContents() {
-//   const cartItems = getLocalStorage('so-cart') || [] ;
-//   const htmlItems = cartItems.map((item) => cartItemTemplate(item));
-//   document.querySelector('.product-list').innerHTML = htmlItems.join('');
-// }
+import { loadHeaderFooter } from './utils.mjs';
+import ShoppingCart from './ShoppingCart.mjs'; // <-- Importar la nueva clase
 
-// function cartItemTemplate(item) {
-//   const newItem = `<li class="cart-card divider">
-//   <a href="#" class="cart-card__image">
-//     <img
-//       src="${item.Image.External}"
-//       alt="${item.Name}"
-//     />
-//   </a>
-//   <a href="#">
-//     <h2 class="card__name">${item.Name}</h2>
-//   </a>
-//   <p class="cart-card__color">${item.Colors[0].ColorName}</p>
-//   <p class="cart-card__quantity">qty: 1</p>
-//   <p class="cart-card__price">$${item.FinalPrice}</p>
-// </li>`;
+// 1. Cargar el encabezado y pie de página dinámicamente
+loadHeaderFooter();
 
-//   return newItem;
-// }
+// 2. Inicializar la clase ShoppingCart para renderizar los productos
+const cart = new ShoppingCart('so-cart', '.product-list');
 
-// renderCartContents();
-import { getLocalStorage } from './utils.mjs';
-
-function renderCartContents() {
-  const cartItems = getLocalStorage('so-cart');
-  const htmlItems = cartItems.map((item) => cartItemTemplate(item));
-  document.querySelector('.product-list').innerHTML = htmlItems.join('');
-}
-
-function cartItemTemplate(item) {
-  const newItem = `<li class="cart-card divider">
-  <a href="#" class="cart-card__image">
-    <img
-      src="${item.Image}"
-      alt="${item.Name}"
-    />
-  </a>
-  <a href="#">
-    <h2 class="card__name">${item.Name}</h2>
-  </a>
-  <p class="cart-card__color">${item.Colors[0].ColorName}</p>
-  <p class="cart-card__quantity">qty: 1</p>
-  <p class="cart-card__price">$${item.FinalPrice}</p>
-</li>`;
-
-  return newItem;
-}
-
-renderCartContents();
+// El init() manejará la obtención de datos y la renderización
+cart.init();
