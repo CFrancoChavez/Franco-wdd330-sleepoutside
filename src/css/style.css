@@ -203,6 +203,41 @@ button {
   width: 100%;
 }
 
+/* Estilos para el listado de categorías (W03) */
+.category-list {
+  display: flex;
+  /* Permite que los elementos se envuelvan en pantallas pequeñas */
+  flex-wrap: wrap; 
+  justify-content: space-around;
+  list-style: none; /* Asegura que no haya viñetas si se usa <ul> */
+  padding: 1rem 0;
+}
+
+.category-list a {
+  /* Hace que cada categoría ocupe alrededor del 40-45% en móvil */
+  flex: 1 1 40%;
+  text-align: center;
+  text-decoration: none;
+  color: var(--dark-grey);
+  padding: 1rem 0.5rem;
+}
+
+.category-list h3 {
+  margin-top: 0.5rem;
+  font-size: var(--large-font);
+}
+
+.category-list img {
+  /* LÍMITE DE TAMAÑO CRÍTICO para móviles */
+  width: 100%;
+  max-width: 120px; /* Tamaño máximo deseado para los íconos */
+  height: auto;
+  margin: 0 auto;
+  display: block;
+}
+/* Fin de estilos para el listado de categorías */
+
+
 /* Start cart list card styles */
 .cart-card {
   display: grid;
@@ -249,6 +284,15 @@ button {
 
   .mission {
     font-size: 1.2em;
+  }
+
+  /* COMIENZO DEL MEDIA QUERIE - CAMBIOS PARA ESCRITORIO */
+  
+  /* NUEVO: ESTILO PARA ESCRITORIO (Mayor a 500px) */
+  .category-list a {
+    /* En escritorio, queremos que se alineen los 4 en una fila */
+    flex: 1 1 20%; 
+    padding: 2rem 1rem;
   }
 
   .cart-card {
