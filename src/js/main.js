@@ -12,6 +12,6 @@
 // productList.init();
 // src/js/main.js
 
-import { loadHeaderFooter } from "./utils.mjs";
+import { loadHeaderFooter } from './utils.mjs';
 
 loadHeaderFooter();
