@@ -28,20 +28,43 @@
 //     },
 //   },
 // });
-import { resolve } from "path";
-import { defineConfig } from "vite";
+// import { resolve } from 'path';
+// import { defineConfig } from 'vite';
+
+// export default defineConfig({
+//   root: 'src/',
+//   build: {
+//     outDir: '../dist',
+//     rollupOptions: {
+//       input: {
+//         main: resolve(__dirname, 'src/index.html'),
+//         cart: resolve(__dirname, 'src/cart/index.html'),
+//         checkout: resolve(__dirname, 'src/checkout/index.html'),
+//         product: resolve(__dirname, 'src/product_pages/index.html'),
+//         listing: resolve(__dirname, 'src/product_listing/index.html'),
+//       },
+//     },
+//   },
+// });
+import { resolve } from 'path';
+import { defineConfig } from 'vite';
 
 export default defineConfig({
-  root: "src/",
+  // CLAVE: Define la base como relativa al directorio de salida (dist).
+  // Esto soluciona los problemas de routing de JS y CSS en Netlify.
+  base: './', 
+  
+  root: 'src/',
+
   build: {
-    outDir: "../dist",
+    outDir: '../dist',
     rollupOptions: {
       input: {
-        main: resolve(__dirname, "src/index.html"),
-        cart: resolve(__dirname, "src/cart/index.html"),
-        checkout: resolve(__dirname, "src/checkout/index.html"),
-        product: resolve(__dirname, "src/product_pages/index.html"),
-        listing: resolve(__dirname, "src/product_listing/index.html"),
+        main: resolve(__dirname, 'src/index.html'),
+        cart: resolve(__dirname, 'src/cart/index.html'),
+        checkout: resolve(__dirname, 'src/checkout/index.html'),
+        product: resolve(__dirname, 'src/product_pages/index.html'),
+        product_listing: resolve(__dirname, 'src/product_listing/index.html'),
       },
     },
   },
